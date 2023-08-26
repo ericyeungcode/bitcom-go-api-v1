@@ -4,8 +4,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/ericyeungcode/bitsdk/rest"
-	"github.com/ericyeungcode/bitsdk/utils"
+	"github.com/ericyeungcode/bitcom-go-api-v1/rest"
+	"github.com/ericyeungcode/bitcom-go-api-v1/utils"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -16,6 +16,11 @@ func main() {
 	}
 	wsToken, err := restClient.GetWsAuthToken()
 	log.Infof("GetWsAuthToken = %v, err = %v", wsToken, err)
+
+	time.Sleep(time.Second)
+
+	openOrders, err := restClient.GetOpenOrders(nil)
+	log.Infof("GetOpenOrders = %v, err = %v", utils.AnyToJsonStr(openOrders), err)
 
 	time.Sleep(time.Second)
 

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ericyeungcode/bitsdk/rest/apivo"
-	"github.com/ericyeungcode/bitsdk/utils"
-	"github.com/ericyeungcode/bitsdk/utils/requests"
+	"github.com/ericyeungcode/bitcom-go-api-v1/rest/apivo"
+	"github.com/ericyeungcode/bitcom-go-api-v1/utils"
+	"github.com/ericyeungcode/bitcom-go-api-v1/utils/requests"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -54,6 +54,7 @@ type BitcomRestClient struct {
 	ApiKey     string
 	privateKey string
 	httpClient *http.Client
+	VerboseLog bool
 }
 
 func NewBitcomRestClient(baseUrl, apiKey, privateKey string) (*BitcomRestClient, error) {
@@ -101,13 +102,18 @@ func (client *BitcomRestClient) callApiAndParseResult(method, apiPath string, pa
 		url = MergeQueryStr(url, paramMap)
 	}
 
-	log.Infof("SEND req: method=%v, url=%v, body=%v", method, url, bodyStr)
+	if client.VerboseLog {
+		log.Infof("SEND req: method=%v, url=%v, body=%v", method, url, bodyStr)
+	}
+
 	rawResp, err := requests.DoHttp(client.httpClient, method, url, extraHeaders, bodyStr)
 	if err != nil {
 		return false, err
 	}
 
-	log.Infof("GetSdkResponse: request=%v %v, bodyStr=%v, raw response=%v", method, url, bodyStr, string(rawResp.Buffer))
+	if client.VerboseLog {
+		log.Infof("GetSdkResponse: request=%v %v, bodyStr=%v, raw response=%v", method, url, bodyStr, string(rawResp.Buffer))
+	}
 
 	var ret SdkRespPageInfo
 	err = json.Unmarshal(rawResp.Buffer, &ret)
