@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/ericyeungcode/bitsdk/rest"
 	"github.com/ericyeungcode/bitsdk/utils"
@@ -13,11 +14,12 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	posList, err := restClient.GetPositions(nil)
-	if err != nil {
-		log.Errorf(err.Error())
-		return
-	}
+	wsToken, err := restClient.GetWsAuthToken()
+	log.Infof("GetWsAuthToken = %v, err = %v", wsToken, err)
 
-	log.Infof("positions = %v", utils.AnyToJsonStr(posList))
+	time.Sleep(time.Second)
+
+	posList, err := restClient.GetPositions(nil)
+	log.Infof("GetPositions = %v, err = %v", utils.AnyToJsonStr(posList), err)
+
 }

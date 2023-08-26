@@ -13,6 +13,8 @@ import (
 )
 
 const (
+	V1WsAuth = "/v1/ws/auth"
+
 	V1Orders           = "/linear/v1/orders"
 	V1AmendOrders      = "/linear/v1/amend_orders"
 	V1CancelOrders     = "/linear/v1/cancel_orders"
@@ -122,6 +124,18 @@ func (client *BitcomRestClient) callApiAndParseResult(method, apiPath string, pa
 	return ret.PageInfo.HasMore, err
 }
 
+func (client *BitcomRestClient) GetWsAuthToken() (string, error) {
+	var data struct {
+		Token string `json:"token"`
+	}
+
+	_, err := client.callApiAndParseResult(http.MethodGet, V1WsAuth, nil, nil, &data)
+	if err != nil {
+		return "", err
+	}
+	return data.Token, nil
+}
+
 func (client *BitcomRestClient) PlaceOrder(orderReq map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
 	ordActVo = new(apivo.OrderActionVo)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1Orders, orderReq,
@@ -129,7 +143,7 @@ func (client *BitcomRestClient) PlaceOrder(orderReq map[string]any) (ordActVo *a
 	return
 }
 
-func (client *BitcomRestClient) NewBatchOrders(orderReq map[string]any, source string) (batchVo *apivo.UsdxBatchVo, err error) {
+func (client *BitcomRestClient) NewBatchOrders(orderReq map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
 	batchVo = new(apivo.UsdxBatchVo)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1NewBatchOrders, orderReq,
 		map[string]string{}, batchVo)
@@ -207,7 +221,7 @@ func (client *BitcomRestClient) GetBlocktradeUserInfo(req map[string]any) (int64
 		UserId string `json:"user_id"`
 	}
 
-	_, err := client.callApiAndParseResult(http.MethodGet, V1GetBlockTrade, req, nil, &userInfo)
+	_, err := client.callApiAndParseResult(http.MethodGet, V1BtUserInfo, req, nil, &userInfo)
 	if err != nil {
 		return 0, err
 	}
