@@ -15,29 +15,54 @@ import (
 const (
 	V1WsAuth = "/v1/ws/auth"
 
-	V1Orders           = "/linear/v1/orders"
-	V1AmendOrders      = "/linear/v1/amend_orders"
-	V1CancelOrders     = "/linear/v1/cancel_orders"
-	V1NewBatchOrders   = "/linear/v1/batchorders"
-	V1AmendBatchOrders = "/linear/v1/amend_batchorders"
+	// SPOT
+	V1_SPOT_ORDERS              = "/spot/v1/orders"
+	V1_SPOT_CANCEL_ORDERS       = "/spot/v1/cancel_orders"
+	V1_SPOT_OPENORDERS          = "/spot/v1/open_orders"
+	V1_SPOT_USER_TRADES         = "/spot/v1/user/trades"
+	V1_SPOT_AMEND_ORDERS        = "/spot/v1/amend_orders"
+	V1_SPOT_WS_AUTH             = "/spot/v1/ws/auth"
+	V1_SPOT_BATCH_ORDERS        = "/spot/v1/batchorders"
+	V1_SPOT_AMEND_BATCH_ORDERS  = "/spot/v1/amend_batchorders"
+	V1_SPOT_MMP_STATE           = "/spot/v1/mmp_state"
+	V1_SPOT_MMP_UPDATE_CONFIG   = "/spot/v1/update_mmp_config"
+	V1_SPOT_RESET_MMP           = "/spot/v1/reset_mmp"
+	V1_SPOT_ACCOUNT_CONFIGS_COD = "/spot/v1/account_configs/cod"
+	V1_SPOT_ACCOUNT_CONFIGS     = "/spot/v1/account_configs"
+	V1_SPOT_AGG_TRADES          = "/spot/v1/aggregated/trades"
 
-	V1OpenOrder  = "/linear/v1/open_orders"
-	V1UserTrades = "/linear/v1/user/trades"
-	V1Positions  = "/linear/v1/positions"
+	// UM
+	V1_UM_ACCOUNT_MODE     = "/um/v1/account_mode"
+	V1_UM_ACCOUNTS         = "/um/v1/accounts"
+	V1_UM_TRANSACTIONS     = "/um/v1/transactions"
+	V1_UM_INTEREST_RECORDS = "/um/v1/interest_records"
 
-	V1AccountConfigs = "/linear/v1/account_configs"
+	// Linear
+	V1_Linear_Orders           = "/linear/v1/orders"
+	V1_Linear_AmendOrders      = "/linear/v1/amend_orders"
+	V1_Linear_CancelOrders     = "/linear/v1/cancel_orders"
+	V1_Linear_NewBatchOrders   = "/linear/v1/batchorders"
+	V1_Linear_AmendBatchOrders = "/linear/v1/amend_batchorders"
 
-	V1CondOrders = "/linear/v1/conditional_orders"
+	V1_Linear_OpenOrder  = "/linear/v1/open_orders"
+	V1_Linear_UserTrades = "/linear/v1/user/trades"
+	V1_Linear_Positions  = "/linear/v1/positions"
 
-	V1LeverageRatio = "/linear/v1/leverage_ratio"
+	V1_Linear_AccountConfigs = "/linear/v1/account_configs"
 
-	V1AggregatedPositions = "/linear/v1/aggregated/positions"
-	V1AggregatedTrades    = "/linear/v1/aggregated/trades"
+	// TODO: mmp
 
-	V1NewBlockTrade      = "/linear/v1/blocktrades"
-	V1GetBlockTrade      = "/linear/v1/blocktrades"
-	V1PlatformBlockTrade = "/linear/v1/platform_blocktrades"
-	V1BtUserInfo         = "/linear/v1/user/info"
+	V1_Linear_CondOrders = "/linear/v1/conditional_orders"
+
+	V1_Linear_LeverageRatio = "/linear/v1/leverage_ratio"
+
+	V1_Linear_AggregatedPositions = "/linear/v1/aggregated/positions"
+	V1_Linear_AggregatedTrades    = "/linear/v1/aggregated/trades"
+
+	V1_Linear_NewBlockTrade      = "/linear/v1/blocktrades"
+	V1_Linear_GetBlockTrade      = "/linear/v1/blocktrades"
+	V1_Linear_PlatformBlockTrade = "/linear/v1/platform_blocktrades"
+	V1_Linear_BtUserInfo         = "/linear/v1/user/info"
 )
 
 type SdkRespPageInfo struct {
@@ -142,83 +167,138 @@ func (client *BitcomRestClient) GetWsAuthToken() (string, error) {
 	return data.Token, nil
 }
 
+//////////////////
+// Spot
+//////////////////
+
+func (client *BitcomRestClient) SpotPlaceOrder(orderReq map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
+	ordActVo = new(apivo.OrderActionVo)
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_SPOT_ORDERS, orderReq,
+		map[string]string{}, ordActVo)
+	return
+}
+
+func (client *BitcomRestClient) SpotNewBatchOrders(orderReq map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
+	batchVo = new(apivo.UsdxBatchVo)
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_SPOT_BATCH_ORDERS, orderReq,
+		map[string]string{}, batchVo)
+	return
+}
+
+func (client *BitcomRestClient) SpotAmendOrder(req map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
+	ordActVo = new(apivo.OrderActionVo)
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_SPOT_AMEND_ORDERS, req, nil, ordActVo)
+	return
+}
+
+func (client *BitcomRestClient) SpotAmendBatchOrders(req map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
+	batchVo = new(apivo.UsdxBatchVo)
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_SPOT_AMEND_BATCH_ORDERS, req, nil, batchVo)
+	return
+}
+
+func (client *BitcomRestClient) SpotCancelOrders(req map[string]any) (cancelVo *apivo.OrderCancelVo, err error) {
+	cancelVo = new(apivo.OrderCancelVo)
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_SPOT_CANCEL_ORDERS, req, nil, cancelVo)
+	return
+}
+
+func (client *BitcomRestClient) SpotGetOrderHistory(req map[string]any) (orderVoList []*apivo.OrderVo, hasMore bool, err error) {
+	hasMore, err = client.callApiAndParseResult(http.MethodGet, V1_SPOT_ORDERS, req, nil, &orderVoList)
+	return
+}
+
+func (client *BitcomRestClient) SpotGetOpenOrders(req map[string]any) (orderVoList []*apivo.OrderVo, err error) {
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_SPOT_OPENORDERS, req, nil, &orderVoList)
+	return
+}
+
+func (client *BitcomRestClient) SpotGetUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_SPOT_USER_TRADES, req, nil, &tradeVoList)
+	return
+}
+
+//////////////////
+// Linear
+//////////////////
+
 func (client *BitcomRestClient) LinearPlaceOrder(orderReq map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
 	ordActVo = new(apivo.OrderActionVo)
-	_, err = client.callApiAndParseResult(http.MethodPost, V1Orders, orderReq,
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_Linear_Orders, orderReq,
 		map[string]string{}, ordActVo)
 	return
 }
 
 func (client *BitcomRestClient) LinearNewBatchOrders(orderReq map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
 	batchVo = new(apivo.UsdxBatchVo)
-	_, err = client.callApiAndParseResult(http.MethodPost, V1NewBatchOrders, orderReq,
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_Linear_NewBatchOrders, orderReq,
 		map[string]string{}, batchVo)
 	return
 }
 
 func (client *BitcomRestClient) LinearAmendOrder(req map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
 	ordActVo = new(apivo.OrderActionVo)
-	_, err = client.callApiAndParseResult(http.MethodPost, V1AmendOrders, req, nil, ordActVo)
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_Linear_AmendOrders, req, nil, ordActVo)
 	return
 }
 
 func (client *BitcomRestClient) LinearAmendBatchOrders(req map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
 	batchVo = new(apivo.UsdxBatchVo)
-	_, err = client.callApiAndParseResult(http.MethodPost, V1AmendBatchOrders, req, nil, batchVo)
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_Linear_AmendBatchOrders, req, nil, batchVo)
 	return
 }
 
 func (client *BitcomRestClient) LinearCancelOrders(req map[string]any) (cancelVo *apivo.OrderCancelVo, err error) {
 	cancelVo = new(apivo.OrderCancelVo)
-	_, err = client.callApiAndParseResult(http.MethodPost, V1CancelOrders, req, nil, cancelVo)
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_Linear_CancelOrders, req, nil, cancelVo)
 	return
 }
 
 func (client *BitcomRestClient) LinearGetOrderHistory(req map[string]any) (orderVoList []*apivo.OrderVo, hasMore bool, err error) {
-	hasMore, err = client.callApiAndParseResult(http.MethodGet, V1Orders, req, nil, &orderVoList)
+	hasMore, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_Orders, req, nil, &orderVoList)
 	return
 }
 
 func (client *BitcomRestClient) LinearGetOpenOrders(req map[string]any) (orderVoList []*apivo.OrderVo, err error) {
-	_, err = client.callApiAndParseResult(http.MethodGet, V1OpenOrder, req, nil, &orderVoList)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_OpenOrder, req, nil, &orderVoList)
 	return
 }
 
 func (client *BitcomRestClient) LinearGetUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
-	_, err = client.callApiAndParseResult(http.MethodGet, V1UserTrades, req, nil, &tradeVoList)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_UserTrades, req, nil, &tradeVoList)
 	return
 }
 
 func (client *BitcomRestClient) LinearGetPositions(req map[string]any) (posVoList []*apivo.UsdxPositionVo, err error) {
-	_, err = client.callApiAndParseResult(http.MethodGet, V1Positions, req, nil, &posVoList)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_Positions, req, nil, &posVoList)
 	return
 }
 
 func (client *BitcomRestClient) LinearQueryAccountConfigs(req map[string]any) (data *apivo.UsdxUserConfigVo, err error) {
 	data = new(apivo.UsdxUserConfigVo)
-	_, err = client.callApiAndParseResult(http.MethodGet, V1AccountConfigs, req, nil, data)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_AccountConfigs, req, nil, data)
 	return
 }
 
 func (client *BitcomRestClient) LinearQueryConditionalOrders(req map[string]any) (data []*apivo.UsdxCondOrderVo, err error) {
-	_, err = client.callApiAndParseResult(http.MethodGet, V1CondOrders, req, nil, &data)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_CondOrders, req, nil, &data)
 	return
 }
 
 func (client *BitcomRestClient) LinearPlaceBlocktrades(orderReq map[string]any) (dataVo *apivo.BlockTradeResponse, err error) {
 	dataVo = new(apivo.BlockTradeResponse)
-	_, err = client.callApiAndParseResult(http.MethodPost, V1NewBlockTrade, orderReq,
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_Linear_NewBlockTrade, orderReq,
 		map[string]string{}, dataVo)
 	return
 }
 
 func (client *BitcomRestClient) LinearGetBlocktrades(req map[string]any) (data []*apivo.BlockTradeQueryVo, err error) {
-	_, err = client.callApiAndParseResult(http.MethodGet, V1GetBlockTrade, req, nil, &data)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_GetBlockTrade, req, nil, &data)
 	return
 }
 
 func (client *BitcomRestClient) LinearGetPlatformBlocktrades(req map[string]any) (data []*apivo.BlockTradeQueryVo, err error) {
-	_, err = client.callApiAndParseResult(http.MethodGet, V1PlatformBlockTrade, req, nil, &data)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_PlatformBlockTrade, req, nil, &data)
 	return
 }
 
@@ -227,7 +307,7 @@ func (client *BitcomRestClient) LinearGetBlocktradeUserInfo(req map[string]any) 
 		UserId string `json:"user_id"`
 	}
 
-	_, err := client.callApiAndParseResult(http.MethodGet, V1BtUserInfo, req, nil, &userInfo)
+	_, err := client.callApiAndParseResult(http.MethodGet, V1_Linear_BtUserInfo, req, nil, &userInfo)
 	if err != nil {
 		return 0, err
 	}
@@ -236,23 +316,23 @@ func (client *BitcomRestClient) LinearGetBlocktradeUserInfo(req map[string]any) 
 
 func (client *BitcomRestClient) LinearGetLeverageRatio(req map[string]any) (data *apivo.LeverageRatioVo, err error) {
 	data = new(apivo.LeverageRatioVo)
-	_, err = client.callApiAndParseResult(http.MethodGet, V1LeverageRatio, req, nil, data)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_LeverageRatio, req, nil, data)
 	return
 }
 
 func (client *BitcomRestClient) LinearUpdateLeverageRatio(req map[string]any) (data *apivo.LeverageRatioVo, err error) {
 	data = new(apivo.LeverageRatioVo)
-	_, err = client.callApiAndParseResult(http.MethodPost, V1LeverageRatio, req,
+	_, err = client.callApiAndParseResult(http.MethodPost, V1_Linear_LeverageRatio, req,
 		map[string]string{}, data)
 	return
 }
 
 func (client *BitcomRestClient) LinearGetAggregatedPositions(req map[string]any) (posVoList []*apivo.UsdxPositionVo, err error) {
-	_, err = client.callApiAndParseResult(http.MethodGet, V1AggregatedPositions, req, nil, &posVoList)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_AggregatedPositions, req, nil, &posVoList)
 	return
 }
 
 func (client *BitcomRestClient) LinearGetAggregatedUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
-	_, err = client.callApiAndParseResult(http.MethodGet, V1AggregatedTrades, req, nil, &tradeVoList)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_Linear_AggregatedTrades, req, nil, &tradeVoList)
 	return
 }
