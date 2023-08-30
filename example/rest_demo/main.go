@@ -19,12 +19,12 @@ func main() {
 
 	time.Sleep(time.Second)
 
-	openOrders, err := restClient.GetOpenOrders(nil)
+	openOrders, err := restClient.LinearGetOpenOrders(nil)
 	log.Infof("GetOpenOrders = %v, err = %v", utils.AnyToJsonStr(openOrders), err)
 
 	time.Sleep(time.Second)
 
-	posList, err := restClient.GetPositions(nil)
+	posList, err := restClient.LinearGetPositions(nil)
 	log.Infof("GetPositions = %v, err = %v", utils.AnyToJsonStr(posList), err)
 
 }

@@ -142,87 +142,87 @@ func (client *BitcomRestClient) GetWsAuthToken() (string, error) {
 	return data.Token, nil
 }
 
-func (client *BitcomRestClient) PlaceOrder(orderReq map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
+func (client *BitcomRestClient) LinearPlaceOrder(orderReq map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
 	ordActVo = new(apivo.OrderActionVo)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1Orders, orderReq,
 		map[string]string{}, ordActVo)
 	return
 }
 
-func (client *BitcomRestClient) NewBatchOrders(orderReq map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
+func (client *BitcomRestClient) LinearNewBatchOrders(orderReq map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
 	batchVo = new(apivo.UsdxBatchVo)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1NewBatchOrders, orderReq,
 		map[string]string{}, batchVo)
 	return
 }
 
-func (client *BitcomRestClient) AmendOrder(req map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
+func (client *BitcomRestClient) LinearAmendOrder(req map[string]any) (ordActVo *apivo.OrderActionVo, err error) {
 	ordActVo = new(apivo.OrderActionVo)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1AmendOrders, req, nil, ordActVo)
 	return
 }
 
-func (client *BitcomRestClient) AmendBatchOrders(req map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
+func (client *BitcomRestClient) LinearAmendBatchOrders(req map[string]any) (batchVo *apivo.UsdxBatchVo, err error) {
 	batchVo = new(apivo.UsdxBatchVo)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1AmendBatchOrders, req, nil, batchVo)
 	return
 }
 
-func (client *BitcomRestClient) CancelOrders(req map[string]any) (cancelVo *apivo.OrderCancelVo, err error) {
+func (client *BitcomRestClient) LinearCancelOrders(req map[string]any) (cancelVo *apivo.OrderCancelVo, err error) {
 	cancelVo = new(apivo.OrderCancelVo)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1CancelOrders, req, nil, cancelVo)
 	return
 }
 
-func (client *BitcomRestClient) GetOrderHistory(req map[string]any) (orderVoList []*apivo.OrderVo, hasMore bool, err error) {
+func (client *BitcomRestClient) LinearGetOrderHistory(req map[string]any) (orderVoList []*apivo.OrderVo, hasMore bool, err error) {
 	hasMore, err = client.callApiAndParseResult(http.MethodGet, V1Orders, req, nil, &orderVoList)
 	return
 }
 
-func (client *BitcomRestClient) GetOpenOrders(req map[string]any) (orderVoList []*apivo.OrderVo, err error) {
+func (client *BitcomRestClient) LinearGetOpenOrders(req map[string]any) (orderVoList []*apivo.OrderVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1OpenOrder, req, nil, &orderVoList)
 	return
 }
 
-func (client *BitcomRestClient) GetUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
+func (client *BitcomRestClient) LinearGetUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1UserTrades, req, nil, &tradeVoList)
 	return
 }
 
-func (client *BitcomRestClient) GetPositions(req map[string]any) (posVoList []*apivo.UsdxPositionVo, err error) {
+func (client *BitcomRestClient) LinearGetPositions(req map[string]any) (posVoList []*apivo.UsdxPositionVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1Positions, req, nil, &posVoList)
 	return
 }
 
-func (client *BitcomRestClient) QueryAccountConfigs(req map[string]any) (data *apivo.UsdxUserConfigVo, err error) {
+func (client *BitcomRestClient) LinearQueryAccountConfigs(req map[string]any) (data *apivo.UsdxUserConfigVo, err error) {
 	data = new(apivo.UsdxUserConfigVo)
 	_, err = client.callApiAndParseResult(http.MethodGet, V1AccountConfigs, req, nil, data)
 	return
 }
 
-func (client *BitcomRestClient) QueryConditionalOrders(req map[string]any) (data []*apivo.UsdxCondOrderVo, err error) {
+func (client *BitcomRestClient) LinearQueryConditionalOrders(req map[string]any) (data []*apivo.UsdxCondOrderVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1CondOrders, req, nil, &data)
 	return
 }
 
-func (client *BitcomRestClient) PlaceBlocktrades(orderReq map[string]any) (dataVo *apivo.BlockTradeResponse, err error) {
+func (client *BitcomRestClient) LinearPlaceBlocktrades(orderReq map[string]any) (dataVo *apivo.BlockTradeResponse, err error) {
 	dataVo = new(apivo.BlockTradeResponse)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1NewBlockTrade, orderReq,
 		map[string]string{}, dataVo)
 	return
 }
 
-func (client *BitcomRestClient) GetBlocktrades(req map[string]any) (data []*apivo.BlockTradeQueryVo, err error) {
+func (client *BitcomRestClient) LinearGetBlocktrades(req map[string]any) (data []*apivo.BlockTradeQueryVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1GetBlockTrade, req, nil, &data)
 	return
 }
 
-func (client *BitcomRestClient) GetPlatformBlocktrades(req map[string]any) (data []*apivo.BlockTradeQueryVo, err error) {
+func (client *BitcomRestClient) LinearGetPlatformBlocktrades(req map[string]any) (data []*apivo.BlockTradeQueryVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1PlatformBlockTrade, req, nil, &data)
 	return
 }
 
-func (client *BitcomRestClient) GetBlocktradeUserInfo(req map[string]any) (int64, error) {
+func (client *BitcomRestClient) LinearGetBlocktradeUserInfo(req map[string]any) (int64, error) {
 	var userInfo struct {
 		UserId string `json:"user_id"`
 	}
@@ -234,25 +234,25 @@ func (client *BitcomRestClient) GetBlocktradeUserInfo(req map[string]any) (int64
 	return utils.MustAToInt64(userInfo.UserId), nil
 }
 
-func (client *BitcomRestClient) GetLeverageRatio(req map[string]any) (data *apivo.LeverageRatioVo, err error) {
+func (client *BitcomRestClient) LinearGetLeverageRatio(req map[string]any) (data *apivo.LeverageRatioVo, err error) {
 	data = new(apivo.LeverageRatioVo)
 	_, err = client.callApiAndParseResult(http.MethodGet, V1LeverageRatio, req, nil, data)
 	return
 }
 
-func (client *BitcomRestClient) UpdateLeverageRatio(req map[string]any) (data *apivo.LeverageRatioVo, err error) {
+func (client *BitcomRestClient) LinearUpdateLeverageRatio(req map[string]any) (data *apivo.LeverageRatioVo, err error) {
 	data = new(apivo.LeverageRatioVo)
 	_, err = client.callApiAndParseResult(http.MethodPost, V1LeverageRatio, req,
 		map[string]string{}, data)
 	return
 }
 
-func (client *BitcomRestClient) GetAggregatedPositions(req map[string]any) (posVoList []*apivo.UsdxPositionVo, err error) {
+func (client *BitcomRestClient) LinearGetAggregatedPositions(req map[string]any) (posVoList []*apivo.UsdxPositionVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1AggregatedPositions, req, nil, &posVoList)
 	return
 }
 
-func (client *BitcomRestClient) GetAggregatedUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
+func (client *BitcomRestClient) LinearGetAggregatedUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1AggregatedTrades, req, nil, &tradeVoList)
 	return
 }
