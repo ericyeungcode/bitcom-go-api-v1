@@ -18,12 +18,14 @@ func main() {
 	log.Infof("GetWsAuthToken = %v, err = %v", wsToken, err)
 
 	time.Sleep(time.Second)
+	spotCfgs, err := restClient.SpotQueryAccountConfigs(nil)
+	log.Infof("SpotQueryAccountConfigs = %v, err = %v", utils.AnyToJsonStr(spotCfgs), err)
 
+	time.Sleep(time.Second)
 	openOrders, err := restClient.LinearGetOpenOrders(nil)
 	log.Infof("GetOpenOrders = %v, err = %v", utils.AnyToJsonStr(openOrders), err)
 
 	time.Sleep(time.Second)
-
 	posList, err := restClient.LinearGetPositions(nil)
 	log.Infof("GetPositions = %v, err = %v", utils.AnyToJsonStr(posList), err)
 

@@ -15,6 +15,13 @@ import (
 const (
 	V1WsAuth = "/v1/ws/auth"
 
+	// UM
+	V1_UM_ACCOUNT_MODE     = "/um/v1/account_mode"
+	V1_UM_ACCOUNTS         = "/um/v1/accounts"
+	V1_UM_ACCOUNT_CONFIGS  = "/um/v1/um_account_configs"
+	V1_UM_TRANSACTIONS     = "/um/v1/transactions"
+	V1_UM_INTEREST_RECORDS = "/um/v1/interest_records"
+
 	// SPOT
 	V1_SPOT_ORDERS              = "/spot/v1/orders"
 	V1_SPOT_CANCEL_ORDERS       = "/spot/v1/cancel_orders"
@@ -30,12 +37,6 @@ const (
 	V1_SPOT_ACCOUNT_CONFIGS_COD = "/spot/v1/account_configs/cod"
 	V1_SPOT_ACCOUNT_CONFIGS     = "/spot/v1/account_configs"
 	V1_SPOT_AGG_TRADES          = "/spot/v1/aggregated/trades"
-
-	// UM
-	V1_UM_ACCOUNT_MODE     = "/um/v1/account_mode"
-	V1_UM_ACCOUNTS         = "/um/v1/accounts"
-	V1_UM_TRANSACTIONS     = "/um/v1/transactions"
-	V1_UM_INTEREST_RECORDS = "/um/v1/interest_records"
 
 	// Linear
 	V1_Linear_Orders           = "/linear/v1/orders"
@@ -155,6 +156,10 @@ func (client *BitcomRestClient) callApiAndParseResult(method, apiPath string, pa
 	return ret.PageInfo.HasMore, err
 }
 
+//////////////////
+// Ws
+//////////////////
+
 func (client *BitcomRestClient) GetWsAuthToken() (string, error) {
 	var data struct {
 		Token string `json:"token"`
@@ -165,6 +170,52 @@ func (client *BitcomRestClient) GetWsAuthToken() (string, error) {
 		return "", err
 	}
 	return data.Token, nil
+}
+
+func (client *BitcomRestClient) SpotGetWsAuthToken() (string, error) {
+	var data struct {
+		Token string `json:"token"`
+	}
+
+	_, err := client.callApiAndParseResult(http.MethodGet, V1_SPOT_WS_AUTH, nil, nil, &data)
+	if err != nil {
+		return "", err
+	}
+	return data.Token, nil
+}
+
+//////////////////
+// Um account etc..
+//////////////////
+
+func (client *BitcomRestClient) QueryAccountMode(paramMap map[string]any) (*apivo.AccountModeVo, error) {
+	var result apivo.AccountModeVo
+	_, err := client.callApiAndParseResult(http.MethodGet, V1_UM_ACCOUNT_MODE, paramMap, nil, &result)
+	return &result, err
+}
+
+func (client *BitcomRestClient) QueryUmAccount(paramMap map[string]any) (*apivo.UmAccountVo, error) {
+	var result apivo.UmAccountVo
+	_, err := client.callApiAndParseResult(http.MethodGet, V1_UM_ACCOUNTS, paramMap, nil, &result)
+	return &result, err
+}
+
+func (client *BitcomRestClient) QueryUmTxLogs(paramMap map[string]any) (bool, []*apivo.UmTxLogVo, error) {
+	var result []*apivo.UmTxLogVo
+	hasMore, err := client.callApiAndParseResult(http.MethodGet, V1_UM_TRANSACTIONS, paramMap, nil, &result)
+	return hasMore, result, err
+}
+
+func (client *BitcomRestClient) QueryUmAccountConfigs(paramMap map[string]any) (*apivo.UmAccountConfigVo, error) {
+	var result apivo.UmAccountConfigVo
+	_, err := client.callApiAndParseResult(http.MethodGet, V1_UM_ACCOUNT_CONFIGS, paramMap, nil, &result)
+	return &result, err
+}
+
+func (client *BitcomRestClient) QueryInterests(paramMap map[string]any) (bool, []*apivo.InterestVo, error) {
+	var result []*apivo.InterestVo
+	hasMore, err := client.callApiAndParseResult(http.MethodGet, V1_UM_INTEREST_RECORDS, paramMap, nil, &result)
+	return hasMore, result, err
 }
 
 //////////////////
@@ -216,6 +267,49 @@ func (client *BitcomRestClient) SpotGetOpenOrders(req map[string]any) (orderVoLi
 func (client *BitcomRestClient) SpotGetUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
 	_, err = client.callApiAndParseResult(http.MethodGet, V1_SPOT_USER_TRADES, req, nil, &tradeVoList)
 	return
+}
+
+func (client *BitcomRestClient) SpotGetAggregatedUserTrades(req map[string]any) (tradeVoList []*apivo.TradeVo, err error) {
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_SPOT_AGG_TRADES, req, nil, &tradeVoList)
+	return
+}
+
+func (client *BitcomRestClient) SpotQueryAccountConfigs(req map[string]any) (data *apivo.SpotAccountConfigVo, err error) {
+	data = new(apivo.SpotAccountConfigVo)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_SPOT_ACCOUNT_CONFIGS, req, nil, data)
+	return
+}
+
+func (client *BitcomRestClient) SpotQueryMmpState(req map[string]any) (data *apivo.MmpVo, err error) {
+	data = new(apivo.MmpVo)
+	_, err = client.callApiAndParseResult(http.MethodGet, V1_SPOT_MMP_STATE, req, nil, data)
+	return
+}
+
+func (client *BitcomRestClient) SpotUpdateMmpConfig(req map[string]any) error {
+	data := new(string)
+	_, err := client.callApiAndParseResult(http.MethodPost, V1_SPOT_MMP_UPDATE_CONFIG, req, nil, data)
+	return err
+}
+
+func (client *BitcomRestClient) SpotResetMmp(req map[string]any) error {
+	data := new(string)
+	_, err := client.callApiAndParseResult(http.MethodPost, V1_SPOT_RESET_MMP, req, nil, data)
+	return err
+}
+
+func (client *BitcomRestClient) SpotQueryCodConfig() (bool, error) {
+	data := &struct {
+		Cod bool `json:"cod"`
+	}{}
+	_, err := client.callApiAndParseResult(http.MethodGet, V1_SPOT_ACCOUNT_CONFIGS_COD, nil, nil, data)
+	return data.Cod, err
+}
+
+func (client *BitcomRestClient) SpotUpdateCodConfig(req map[string]any) error {
+	data := new(string)
+	_, err := client.callApiAndParseResult(http.MethodPost, V1_SPOT_ACCOUNT_CONFIGS_COD, req, nil, data)
+	return err
 }
 
 //////////////////
