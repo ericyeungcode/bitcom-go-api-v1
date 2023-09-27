@@ -4,13 +4,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/ericyeungcode/bitcom-go-api-v1/rest"
+	"github.com/ericyeungcode/bitcom-go-api-v1/bitrest"
 	"github.com/ericyeungcode/bitcom-go-api-v1/utils"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	restClient, err := rest.NewBitcomRestClient(os.Getenv("BITCOM_REST_HOST"), os.Getenv("BITCOM_AK"), os.Getenv("BITCOM_SK"))
+	restClient, err := bitrest.NewBitcomRestClient(os.Getenv("BITCOM_REST_HOST"), os.Getenv("BITCOM_AK"), os.Getenv("BITCOM_SK"))
 	if err != nil {
 		log.Panic(err)
 	}

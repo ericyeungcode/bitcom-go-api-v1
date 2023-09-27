@@ -1,4 +1,4 @@
-package rest
+package bitrest
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ericyeungcode/bitcom-go-api-v1/rest/apivo"
+	"github.com/ericyeungcode/bitcom-go-api-v1/bitrest/apivo"
 	"github.com/ericyeungcode/bitcom-go-api-v1/utils"
 	"github.com/ericyeungcode/bitcom-go-api-v1/utils/requests"
 	log "github.com/sirupsen/logrus"
