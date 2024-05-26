@@ -27,13 +27,41 @@ func ReadWebsocket(ctx context.Context, ws *recws.RecConn) {
 
 			_, message, err := ws.ReadMessage()
 			if err != nil {
-				log.Printf("Error: ReadMessage %s", ws.GetURL())
+				log.Printf("Error: ReadMessage %s, err: %+v\n", ws.GetURL(), err)
 				return
 			}
 
 			log.Printf("RECV: %s", message)
 		}
 	}
+}
+
+func SendPing(ws *recws.RecConn) {
+	pingTicker := time.Tick(time.Second * 5)
+
+	pingId := time.Now().Unix()
+	for range pingTicker {
+		if !ws.IsConnected() {
+			continue
+		}
+
+		req := utils.AnyToJsonStr(map[string]any{
+			"type": "ping",
+			"params": map[string]any{
+				"id": pingId,
+			},
+		})
+
+		pingId += 1
+
+		log.Println("Sending PING: " + req)
+
+		if err := ws.WriteMessage(1, []byte(req)); err != nil {
+			log.Printf("Error: WriteMessage %s", ws.GetURL())
+			return
+		}
+	}
+
 }
 
 func main() {
@@ -49,6 +77,8 @@ func main() {
 	log.Printf("Connecting: %v\n", wsHost)
 	ws.Dial(wsHost, nil)
 
+	go SendPing(&ws)
+
 	var subscription = &bitws.SubReq{
 		Type:        bitws.SubTypeSubscribe,
 		Instruments: []string{"BTC-USD-PERPETUAL"},
@@ -59,7 +89,7 @@ func main() {
 	req := utils.AnyToJsonStr(subscription)
 	log.Printf("Sending subscription: %v\n", req)
 	if err := ws.WriteMessage(1, []byte(req)); err != nil {
-		log.Printf("Error: WriteMessage %s", ws.GetURL())
+		log.Printf("Error: WriteMessage %s, err:%v\n", ws.GetURL(), err)
 		return
 	}
 
