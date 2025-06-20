@@ -2,13 +2,13 @@ package bitrest
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/ericyeungcode/bitcom-go-api-v1/bitrest/apivo"
 	"github.com/ericyeungcode/bitcom-go-api-v1/utils"
-	"github.com/ericyeungcode/bitcom-go-api-v1/utils/requests"
+	"github.com/ericyeungcode/caliber"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -132,7 +132,7 @@ func (client *BitcomRestClient) callApiAndParseResult(method, apiPath string, pa
 		log.Infof("SEND req: method=%v, url=%v, body=%v", method, url, bodyStr)
 	}
 
-	rawResp, err := requests.DoHttp(client.httpClient, method, url, extraHeaders, bodyStr)
+	rawResp, err := caliber.HttpRequest(client.httpClient, method, url, extraHeaders, bodyStr)
 	if err != nil {
 		return false, err
 	}
@@ -148,7 +148,7 @@ func (client *BitcomRestClient) callApiAndParseResult(method, apiPath string, pa
 	}
 
 	if ret.Code != 0 {
-		return false, fmt.Errorf(string(rawResp.Buffer))
+		return false, errors.New(string(rawResp.Buffer))
 	}
 
 	err = json.Unmarshal(*ret.Data, result)
