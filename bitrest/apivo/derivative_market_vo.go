@@ -44,16 +44,6 @@ type OrderBookVo struct {
 	DisplayName  string      `json:"display_name"`
 }
 
-type UsdxPairVo struct {
-	Pair  string `json:"pair" example:"BTC-USD"`
-	Base  string `json:"base" example:"BTC"`
-	Quote string `json:"quote" example:"USD"`
-
-	PairDisplayName  string `json:"pair_display_name"`
-	BaseDisplayName  string `json:"base_display_name"`
-	QuoteDisplayName string `json:"quote_display_name"`
-}
-
 type TickerVo struct {
 	Time         int64  `json:"time"`
 	InstrumentId string `json:"instrument_id"`

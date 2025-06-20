@@ -5,7 +5,7 @@ go 1.24
 toolchain go1.24.1
 
 require (
-	github.com/ericyeungcode/caliber v0.0.0-20250619060109-10fd4caaa198
+	github.com/ericyeungcode/caliber v0.0.0-20250620085617-00776cf54773
 	github.com/recws-org/recws v1.4.0
 	github.com/sirupsen/logrus v1.9.3
 )
