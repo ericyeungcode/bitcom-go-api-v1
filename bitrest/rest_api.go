@@ -8,7 +8,7 @@ import (
 
 	"github.com/ericyeungcode/bitcom-go-api-v1/bitrest/apivo"
 	"github.com/ericyeungcode/bitcom-go-api-v1/utils"
-	"github.com/ericyeungcode/caliber"
+	"github.com/ericyeungcode/caliber/request"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -132,7 +132,7 @@ func (client *BitcomRestClient) callApiAndParseResult(method, apiPath string, pa
 		log.Infof("SEND req: method=%v, url=%v, body=%v", method, url, bodyStr)
 	}
 
-	rawResp, err := caliber.HttpRequest(client.httpClient, method, url, extraHeaders, bodyStr)
+	rawResp, err := request.HttpRequest(client.httpClient, method, url, extraHeaders, bodyStr)
 	if err != nil {
 		return false, err
 	}

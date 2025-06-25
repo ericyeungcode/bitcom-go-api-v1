@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ericyeungcode/bitcom-go-api-v1/bitrest/apivo"
-	"github.com/ericyeungcode/caliber"
+	"github.com/ericyeungcode/caliber/request"
 )
 
 type BitcomMarketClient struct {
@@ -23,7 +23,7 @@ func NewBitcomMarketClient(baseUrl string) *BitcomMarketClient {
 
 func (m *BitcomMarketClient) LinearGetInstruments() ([]*apivo.UsdxInstrumentVo, error) {
 	url := m.baseUrl + "/linear/v1/instruments"
-	apiResp, err := caliber.HttpRequestAndParsePtr[caliber.ApiResponse[[]*apivo.UsdxInstrumentVo]](m.httpClient, http.MethodGet, url, nil, "")
+	apiResp, err := request.HttpRequestAndParsePtr[request.ApiResponse[[]*apivo.UsdxInstrumentVo]](m.httpClient, http.MethodGet, url, nil, "")
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (m *BitcomMarketClient) LinearGetInstruments() ([]*apivo.UsdxInstrumentVo, 
 
 func (m *BitcomMarketClient) LinearGetOrderbook(instrumentId string) (*apivo.OrderBookVo, error) {
 	url := m.baseUrl + fmt.Sprintf("/linear/v1/orderbooks?instrument_id=%v", instrumentId)
-	apiResp, err := caliber.HttpRequestAndParsePtr[caliber.ApiResponse[apivo.OrderBookVo]](m.httpClient, http.MethodGet, url, nil, "")
+	apiResp, err := request.HttpRequestAndParsePtr[request.ApiResponse[apivo.OrderBookVo]](m.httpClient, http.MethodGet, url, nil, "")
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (m *BitcomMarketClient) LinearGetOrderbook(instrumentId string) (*apivo.Ord
 
 func (m *BitcomMarketClient) LinearGetTicker(instrumentId string) (*apivo.TickerVo, error) {
 	url := m.baseUrl + fmt.Sprintf("/linear/v1/tickers?instrument_id=%v", instrumentId)
-	apiResp, err := caliber.HttpRequestAndParsePtr[caliber.ApiResponse[apivo.TickerVo]](m.httpClient, http.MethodGet, url, nil, "")
+	apiResp, err := request.HttpRequestAndParsePtr[request.ApiResponse[apivo.TickerVo]](m.httpClient, http.MethodGet, url, nil, "")
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (m *BitcomMarketClient) LinearGetTicker(instrumentId string) (*apivo.Ticker
 
 func (m *BitcomMarketClient) LinearGetMarketTrades(instrumentId string) (*apivo.MarketTradeVo, error) {
 	url := m.baseUrl + fmt.Sprintf("/linear/v1/market/trades?instrument_id=%v", instrumentId)
-	apiResp, err := caliber.HttpRequestAndParsePtr[caliber.ApiResponse[apivo.MarketTradeVo]](m.httpClient, http.MethodGet, url, nil, "")
+	apiResp, err := request.HttpRequestAndParsePtr[request.ApiResponse[apivo.MarketTradeVo]](m.httpClient, http.MethodGet, url, nil, "")
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (m *BitcomMarketClient) LinearGetMarketTrades(instrumentId string) (*apivo.
 
 func (m *BitcomMarketClient) LinearGetMarketSummary() (*apivo.MarketSummaryVo, error) {
 	url := m.baseUrl + "/linear/v1/market/summary"
-	apiResp, err := caliber.HttpRequestAndParsePtr[caliber.ApiResponse[apivo.MarketSummaryVo]](m.httpClient, http.MethodGet, url, nil, "")
+	apiResp, err := request.HttpRequestAndParsePtr[request.ApiResponse[apivo.MarketSummaryVo]](m.httpClient, http.MethodGet, url, nil, "")
 	if err != nil {
 		return nil, err
 	}
