@@ -15,9 +15,8 @@ func main() {
 	log.Infof("instList = %+v, err = %v", common.MustMarshalStr(instList), err)
 
 	orderbook, err := marketClient.LinearGetOrderbook("BTC-USDT-PERPETUAL")
-	log.Infof("orderbook = %+v, err = %v", common.MustMarshalStr(orderbook), err)
+	log.Infof("orderbook = %+v, err = %v", orderbook, err)
 
 	ticker, err := marketClient.LinearGetTicker("BTC-USDT-PERPETUAL")
-	log.Infof("ticker = %+v, err = %v", common.MustMarshalStr(ticker), err)
-
+	log.Infof("ticker = %+v, err = %v", ticker, err)
 }

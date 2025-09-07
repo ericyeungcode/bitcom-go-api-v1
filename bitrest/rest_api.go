@@ -132,7 +132,7 @@ func (client *BitcomRestClient) callApiAndParseResult(method, apiPath string, pa
 		log.Infof("SEND req: method=%v, url=%v, body=%v", method, url, bodyStr)
 	}
 
-	rawResp, err := request.HttpRequest(client.httpClient, method, url, extraHeaders, bodyStr)
+	rawResp, err := request.HttpRequestRaw(client.httpClient, method, url, extraHeaders, bodyStr)
 	if err != nil {
 		return false, err
 	}
